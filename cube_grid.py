@@ -1,3 +1,4 @@
+# not now but I could consider flattening each cube and connecting them that way
 import pygame
 from pygame.locals import *
 
@@ -5,9 +6,12 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 #get the cube grid ready
-CUBE_SIZE = 3
+CUBE_SIZE = 1
 verticies = ()
-edges = set()
+edges = ()
+surfaces = set()
+
+num_surfaces = CUBE_SIZE * 6
 
 # calculate the vertices
 for x in range(0, CUBE_SIZE + 1):
@@ -15,31 +19,46 @@ for x in range(0, CUBE_SIZE + 1):
         for z in range(0, CUBE_SIZE + 1):
             verticies = verticies + ((x, y ,z), )
 
+# for x in range(0, CUBE_SIZE):
+#     # add z-plane surfaces
+#     surfaces.add()
+
 # calculate the edges from each connected vertex
 # theres probably a better way but this is the best I could come up with quickly
+# or try making every cube a seperate item
 for vertex in verticies:
     x, y, z = vertex[0], vertex[1], vertex[2]
     if x < CUBE_SIZE - 1:
-        edges.add((verticies.index(vertex), verticies.index((x + 1, y, z))) )
+        edges = edges + ((verticies.index(vertex), verticies.index((x + 1, y, z))), )
     
     if x > 0:
-        edges.add((verticies.index(vertex), verticies.index((x - 1, y, z))))
+        edges = edges + ((verticies.index(vertex), verticies.index((x - 1, y, z))), )
 
     if y < CUBE_SIZE - 1:
-        edges.add((verticies.index(vertex), verticies.index((x, y + 1, z))))
+        edges = edges + ((verticies.index(vertex), verticies.index((x, y + 1, z))), )
     
     if y > 0:
-        edges.add((verticies.index(vertex), verticies.index((x, y - 1, z))))
+        edges = edges + ((verticies.index(vertex), verticies.index((x, y - 1, z))), )
 
     if z < CUBE_SIZE - 1:
-        edges.add((verticies.index(vertex), verticies.index((x, y, z + 1))))
+        edges = edges + ((verticies.index(vertex), verticies.index((x, y, z + 1))), )
     
     if z > 0:
-        edges.add((verticies.index(vertex), verticies.index((x, y, z - 1))))
+        edges = edges + ((verticies.index(vertex), verticies.index((x, y, z - 1))), )
 
-# edges = tuple(set(edges))
+#to fill the surfaces, each connecting edge can be used as reference for 2 faces
+# reminder matplotlib can probably do this
+for edge in edges:
+    v1, v2 = verticies[edge[0]], verticies[edge[1]]
+    if(v1[0] < v2[0]):  #edge along x axis
+    
+    elif(v1[1] < v2[1]): #edge along y axis
+    
+    elif(v1[2] < v2[2]): #edge along z axis
 
-print(len(edges))
+# print(verticies[3])
+print(edges)
+print(edges[0])
 
 def Cube():
     glBegin(GL_LINES)
@@ -55,7 +74,7 @@ def main():
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
     # gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
-    gluPerspective(135, (display[0]/display[1]), 0.1, 20.0)
+    gluPerspective(90, (display[0]/display[1]), 0.1, 20.0)
 
     glTranslatef(0.0,0.0, -5)
 
