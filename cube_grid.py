@@ -5,9 +5,9 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 #get the cube grid ready
-CUBE_SIZE = 2
+CUBE_SIZE = 1
 verticies = ()
-edges = ()
+edges = set()
 
 # calculate the vertices
 for x in range(0, CUBE_SIZE + 1):
@@ -20,22 +20,22 @@ for x in range(0, CUBE_SIZE + 1):
 for vertex in verticies:
     x, y, z = vertex[0], vertex[1], vertex[2]
     if x < CUBE_SIZE - 1:
-        edges = edges + ((verticies.index(vertex), verticies.index((x + 1, y, z))), )
+        edges.add((verticies.index(vertex), verticies.index((x + 1, y, z))) )
     
     if x > 0:
-        edges = edges + ((verticies.index(vertex), verticies.index((x - 1, y, z))), )
+        edges.add((verticies.index(vertex), verticies.index((x - 1, y, z))))
 
     if y < CUBE_SIZE - 1:
-        edges = edges + ((verticies.index(vertex), verticies.index((x, y + 1, z))), )
+        edges.add((verticies.index(vertex), verticies.index((x, y + 1, z))))
     
     if y > 0:
-        edges = edges + ((verticies.index(vertex), verticies.index((x, y - 1, z))), )
+        edges.add((verticies.index(vertex), verticies.index((x, y - 1, z))))
 
     if z < CUBE_SIZE - 1:
-        edges = edges + ((verticies.index(vertex), verticies.index((x, y, z + 1))), )
+        edges.add((verticies.index(vertex), verticies.index((x, y, z + 1))))
     
     if z > 0:
-        edges = edges + ((verticies.index(vertex), verticies.index((x, y, z - 1))), )
+        edges.add((verticies.index(vertex), verticies.index((x, y, z - 1))))
 
 edges = tuple(set(edges))
 
@@ -51,11 +51,11 @@ def Cube():
 
 def main():
     pygame.init()
-    display = (800,600)
+    display = (1000,800)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
     # gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
-    gluPerspective(90, (display[0]/display[1]), 0.1, 50.0)
+    gluPerspective(135, (display[0]/display[1]), 0.1, 20.0)
 
     glTranslatef(0.0,0.0, -5)
 
