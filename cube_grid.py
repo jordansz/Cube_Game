@@ -5,7 +5,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 #get the cube grid ready
-CUBE_SIZE = 1
+CUBE_SIZE = 3
 verticies = ()
 edges = set()
 
@@ -37,7 +37,7 @@ for vertex in verticies:
     if z > 0:
         edges.add((verticies.index(vertex), verticies.index((x, y, z - 1))))
 
-edges = tuple(set(edges))
+# edges = tuple(set(edges))
 
 print(len(edges))
 
