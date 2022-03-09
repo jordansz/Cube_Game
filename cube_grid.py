@@ -72,8 +72,6 @@ def drawCube():
         for vertex in edge:
             glColor3fv((0.1, 0.1, 0.2))
             glVertex3fv(verticies[vertex])
-
-
     glEnd()
 
 

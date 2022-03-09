@@ -1,4 +1,5 @@
 from enum import Enum
+from collections import defaultdict
 
 # class Directions(Enum):     # directions are based on looking from normal x,y graph, where forward
 #     forward = forward            # and backward move through the z plane

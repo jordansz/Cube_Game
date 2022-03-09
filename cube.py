@@ -2,6 +2,9 @@
 from cubePath import CubePath
 import utils
 
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
 class Cube():
     def __init__(self, size = 5):
         self.size = size
@@ -35,8 +38,13 @@ class Cube():
 
 
 # render base cube with solution path highlighted
-    def drawCubes(self):
-        pass
+    def drawCube(self):
+        glBegin(GL_LINES)     # not GL_LINES is changed to GL_QUADS for surfaces
+        for edge in self.edges:
+            for vertex in edge:
+                glColor3fv((0.1, 0.1, 0.2))
+                glVertex3fv(self.verticies[vertex])
+        glEnd()
     
 # c = Cube(1)
 # c.generateVerticies()
