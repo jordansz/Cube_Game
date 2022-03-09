@@ -7,10 +7,21 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 WIDTH, HEIGHT = 1000, 600
-CUBE_SIZE = 5
+CUBE_SIZE = 1
 LINE_COLOR = ((0.1, 0.1, 0.1))  # play with colors later
 CUBE_COLOR = ((0.5, 0.5, 0.5))
 #BG_COLOR = 0.7, 0.7, 0.7, 0
+
+
+def drawCubes(cube):
+    glBegin(GL_LINES)     # GL_lines for lines, GL_QUADS for surfaces
+    for edge in cube.edges:
+        for vertex in edge:
+            glColor3fv((0.1, 0.1, 0.2))
+            glVertex3fv(cube.vertices[vertex])
+    glEnd()
+
+
 
 def main():
     pygame.init()
@@ -20,7 +31,8 @@ def main():
     glTranslatef((WIDTH - (WIDTH + CUBE_SIZE)) * 2, 0.0, -10.0)
     
     reference_cube = Cube(CUBE_SIZE)
-    reference_cube.generateVerticies()
+    reference_cube.generatevertices()
+    reference_cube.generateEdges()
 
     while True:
         for event in pygame.event.get():
@@ -28,9 +40,9 @@ def main():
                 pygame.quit()
                 quit()
 
-        # glClearColor(0.7, 0.7, 0.7, 0)
+        glClearColor(0.7, 0.7, 0.7, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        reference_cube.drawCube()
+        drawCubes(reference_cube)
         pygame.display.flip()
         pygame.time.wait(10)
 

@@ -8,7 +8,7 @@ from OpenGL.GLU import *
 class Cube():
     def __init__(self, size = 5):
         self.size = size
-        self.verticies = ()
+        self.vertices = ()
         self.edges = ()
         self.sol_path = []
 
@@ -22,15 +22,15 @@ class Cube():
 # theres probably a better way but this is the best I could come up with quickly
 # or try making every cube a seperate item
 
-    def generateVerticies(self):
+    def generatevertices(self):
         for x in range(0, self.size + 1):
             for y in range(0, self.size + 1):
                 for z in range(0, self.size + 1):
-                    self.verticies += ((x, y, z), )
+                    self.vertices += ((x, y, z), )
 
 
     def generateEdges(self):
-        self.edges = utils.generateEdges(self.size, self.verticies)
+        self.edges = utils.generateEdges(self.size, self.vertices)
 
 
     def generatePath(self):
@@ -38,15 +38,15 @@ class Cube():
 
 
 # render base cube with solution path highlighted
-    def drawCube(self):
-        glBegin(GL_LINES)     # not GL_LINES is changed to GL_QUADS for surfaces
-        for edge in self.edges:
-            for vertex in edge:
-                glColor3fv((0.1, 0.1, 0.2))
-                glVertex3fv(self.verticies[vertex])
-        glEnd()
+    # def drawCube(self):
+    #     glBegin(GL_LINES)     # not GL_LINES is changed to GL_QUADS for surfaces
+    #     for edge in self.edges:
+    #         for vertex in edge:
+    #             glColor3fv((0.1, 0.1, 0.2))
+    #             glVertex3fv(self.vertices[vertex])
+    #     glEnd()
     
 # c = Cube(1)
-# c.generateVerticies()
+# c.generatevertices()
 # c.generateEdges()
-# print(c.verticies)
+# print(c.vertices)

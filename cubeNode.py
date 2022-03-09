@@ -3,7 +3,7 @@ import utils
 
 class CubeNode():
     def __init__(self, vertex1, vertex2, max_len = 0):
-        self.verticies = ()
+        self.vertices = ()
         self.edges = ()
         self.surfaces = ()
         self.bounds = max_len 
@@ -11,7 +11,7 @@ class CubeNode():
         self.vert2 = vertex2
 
     def generateEdges(self):
-        self.edges = utils.generateEdges(1, self.verticies)
+        self.edges = utils.generateEdges(1, self.vertices)
 
     def generateSurfaces(self):
         pass

@@ -48,26 +48,26 @@ def createLegalVertex(v, size):
 # this will loop through and look if each plane in the xyz planes are possible and adds them to surfaces
 # reminder matplotlib can probably do this   
 
-def generateEdges(size, verticies):
+def generateEdges(size, vertices):
     edges = ()
-    for vertex in verticies:
+    for vertex in vertices:
         x, y, z = vertex[0], vertex[1], vertex[2]
         if x < size - 1:
-            edges += ((verticies.index(vertex), verticies.index((x + 1, y, z))), )
+            edges += ((vertices.index(vertex), vertices.index((x + 1, y, z))), )
 
         if x > 0:
-            edges += ((verticies.index(vertex), verticies.index((x - 1, y, z))), )
+            edges += ((vertices.index(vertex), vertices.index((x - 1, y, z))), )
 
         if y < size- 1:
-            edges += ((verticies.index(vertex), verticies.index((x, y + 1, z))), )
+            edges += ((vertices.index(vertex), vertices.index((x, y + 1, z))), )
 
         if y > 0:
-            edges += ((verticies.index(vertex), verticies.index((x, y - 1, z))), )
+            edges += ((vertices.index(vertex), vertices.index((x, y - 1, z))), )
 
         if z < size - 1:
-            edges += ((verticies.index(vertex), verticies.index((x, y, z + 1))), )
+            edges += ((vertices.index(vertex), vertices.index((x, y, z + 1))), )
 
         if z > 0:
-            edges += ((verticies.index(vertex), verticies.index((x, y, z - 1))), )
+            edges += ((vertices.index(vertex), vertices.index((x, y, z - 1))), )
         
     return edges
