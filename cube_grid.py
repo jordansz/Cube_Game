@@ -6,8 +6,12 @@ from OpenGL.GLU import *
 
 from collections import defaultdict
 
+#Screen size
+WIDTH = 1000
+HEIGHT = 600
+
 #get the cube grid ready
-CUBE_SIZE = 2
+CUBE_SIZE = 4
 verticies, edges = (), ()
 surfaces = ()
 
@@ -63,23 +67,27 @@ print(len(verticies))
 print(len(surfaces))
 
 def drawCube():
-    glBegin(GL_QUADS)
-    for surface in surfaces:
-        glColor3fv((0, 1, 0))
-        for vertex in surface:
+    glBegin(GL_LINES)     # not GL_LINES is changed to GL_QUADS for surfaces
+    for edge in edges:
+        for vertex in edge:
+            glColor3fv((0.1, 0.1, 0.2))
             glVertex3fv(verticies[vertex])
+
+
     glEnd()
 
 
 def main():
     pygame.init()
-    display = (1000,800)
-    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    display = (WIDTH, HEIGHT)
+    screen_surface = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
     # gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
     gluPerspective(90, (display[0]/display[1]), 0.1, 20.0)
 
-    glTranslatef(0.0,0.0, -10.)
+
+    glTranslatef((WIDTH - (WIDTH + CUBE_SIZE)) * 2, 0.0, -10.0)
+    axis_rotate_count = 0
 
     while True:
         for event in pygame.event.get():
@@ -87,11 +95,21 @@ def main():
                 pygame.quit()
                 quit()
 
-        glRotatef(0.5, 1, 1, 1)
+        if(axis_rotate_count < 250):
+            glRotatef(0.4, 1, 0, 1)
+        
+        elif(axis_rotate_count >= 250):
+            glRotatef(0.4, -1, 0, -1)
+        if axis_rotate_count > 500:
+            axis_rotate_count = 0
+
+        axis_rotate_count += 1
+        print(axis_rotate_count)
+        glClearColor(0.7, 0.7, 0.7, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         drawCube()
         pygame.display.flip()
-        pygame.time.wait(20)
+        pygame.time.wait(10)
 
 
 main()
