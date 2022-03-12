@@ -53,22 +53,22 @@ def generateEdges(size, vertices):
     edges = ()
     for vertex in vertices:
         x, y, z = vertex[0], vertex[1], vertex[2]
-        if x < size - 1:        # vertex exist in positive x
+        if x + 1 <= offset:        # vertex exist in positive x
             edges += ((vertices.index(vertex), vertices.index((x + 1, y, z))), )
 
-        if x > 0:               # vertex exist in negative x
+        if x - 1 >= offset:               # vertex exist in negative x
             edges += ((vertices.index(vertex), vertices.index((x - 1, y, z))), )
 
-        if y < size- 1:         # vertex exist in positive y
+        if y + 1 <= offset:         # vertex exist in positive y
             edges += ((vertices.index(vertex), vertices.index((x, y + 1, z))), )
 
-        if y > 0:               # vertex exist in negative y
+        if y - 1 >= offset:               # vertex exist in negative y
             edges += ((vertices.index(vertex), vertices.index((x, y - 1, z))), )
 
-        if z < size - 1:        # vertex exist in positive y
+        if z + 1 <= offset:        # vertex exist in positive y
             edges += ((vertices.index(vertex), vertices.index((x, y, z + 1))), )
 
-        if z > 0:               # vertex exist in negative z
+        if z - 1 >= offset:               # vertex exist in negative z
             edges += ((vertices.index(vertex), vertices.index((x, y, z - 1))), )
         
     return edges
