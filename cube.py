@@ -26,7 +26,7 @@ class Cube():
         for x in range(0, self.size + 1):
             for y in range(0, self.size + 1):
                 for z in range(0, self.size + 1):
-                    self.vertices += ((x, y, z), )
+                    self.vertices += ((x - self.size / 2, y - self.size / 2, z - self.size /2), )
 
 
     def generateEdges(self):

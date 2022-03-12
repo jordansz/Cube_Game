@@ -11,7 +11,8 @@ WIDTH = 1000
 HEIGHT = 600
 
 #get the cube grid ready
-CUBE_SIZE = 4
+CUBE_SIZE = 1
+centered = CUBE_SIZE / 2
 vertices, edges = (), ()
 surfaces = ()
 
@@ -19,7 +20,7 @@ surfaces = ()
 for x in range(0, CUBE_SIZE + 1):
     for y in range(0, CUBE_SIZE + 1):
         for z in range(0, CUBE_SIZE + 1):
-            vertices = vertices + ((x, y ,z), )
+            vertices = vertices + ((x - centered, y - centered ,z - centered), )
 
 
 # calculate the edges from each connected vertex
@@ -63,8 +64,6 @@ for edge in edges:
         if(v1[0] + 1 <= CUBE_SIZE):
             surfaces += ((vertices.index(v1), vertices.index(v2), vertices.index((v1[0] + 1, v1[1], v1[2])), vertices.index((v2[0] + 1, v2[1], v2[2]))), )
 
-print(len(vertices))
-print(len(surfaces))
 
 def drawCube():
     glBegin(GL_LINES)     # not GL_LINES is changed to GL_QUADS for surfaces
@@ -86,23 +85,23 @@ def main():
 
     glTranslatef((WIDTH - (WIDTH + CUBE_SIZE)) * 2, 0.0, -10.0)
     axis_rotate_count = 0
-
+    print(vertices)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-        if(axis_rotate_count < 250):
-            glRotatef(0.4, 1, 0, 1)
+        # if(axis_rotate_count < 250):
+        #     glRotatef(0.4, 1, 0, 1)
         
-        elif(axis_rotate_count >= 250):
-            glRotatef(0.4, -1, 0, -1)
-        if axis_rotate_count > 500:
-            axis_rotate_count = 0
+        # elif(axis_rotate_count >= 250):
+        #     glRotatef(0.4, -1, 0, -1)
+        # if axis_rotate_count > 500:
+        #     axis_rotate_count = 0
 
-        axis_rotate_count += 1
-        print(axis_rotate_count)
+        # axis_rotate_count += 1
+        # print(axis_rotate_count)
         glClearColor(0.7, 0.7, 0.7, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         drawCube()
