@@ -1,3 +1,4 @@
+from turtle import width
 import pygame
 from pygame.locals import *
 import math
@@ -9,7 +10,7 @@ from OpenGL.GLU import *
 
 # colors and screen details
 WIDTH, HEIGHT = 1000, 600
-CUBE_SIZE = 1
+CUBE_SIZE = 5
 LINE_COLOR = ((0.1, 0.1, 0.1))  # play with colors later
 CUBE_COLOR = ((0.5, 0.5, 0.5))
 #BG_COLOR = 0.7, 0.7, 0.7, 0
@@ -53,9 +54,9 @@ def mouseMovement(event):
             temp[1] = modelView[4]*dy + modelView[5]*dx
             temp[2] = modelView[8]*dy + modelView[9]*dx
             norm_xy = math.sqrt(temp[0]*temp[0] + temp[1]*temp[1] + temp[2]*temp[2])
-            glTranslatef(-CUBE_SIZE / 2.0, -2.0, -10.0)
-            glRotatef(math.sqrt(dx*dx+dy*dy) / 2, temp[0]/norm_xy, temp[1]/norm_xy, 0)
-            glTranslatef(CUBE_SIZE / 2.0, 2.0, 10.0)
+            # glTranslatef((WIDTH - (WIDTH + CUBE_SIZE)) * 1.5, 0, -10.0)
+            glRotatef(math.sqrt(dx*dx+dy*dy) / 2, temp[0]/norm_xy, temp[1]/norm_xy, temp[2]/norm_xy)
+            # glTranslatef(-(WIDTH - (WIDTH + CUBE_SIZE)) * 1.5, 0, 10.0)
 
         lastPosX = x
         lastPosY = y
@@ -66,7 +67,7 @@ def main():
     screen_surface = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
     gluPerspective(90, (display[0]/display[1]), 0.1, 50.0)
     center = CUBE_SIZE / 2.0
-    glTranslatef(-center, -2, -10.0) 
+    glTranslatef((WIDTH - (WIDTH + CUBE_SIZE)) * 1.5, 0, -10.0) 
     
     reference_cube = Cube(CUBE_SIZE)
     reference_cube.generatevertices()
