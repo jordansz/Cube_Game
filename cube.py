@@ -11,7 +11,7 @@ class Cube():
         self.vertices = ()
         self.edges = ()
         self.sol_path = []
-
+        self.surfaces = ()
     
     def __eq__(self, cube):
         print("might need this later")
@@ -35,6 +35,22 @@ class Cube():
 
     def generatePath(self):
         pass
+
+
+    def generateSurfaces(self):
+        for edge in self.edges:
+            v1, v2 = self.vertices[edge[0]], self.vertices[edge[1]]
+            if(v1[0] < v2[0] or v1[0] > v2[0]):     #edge along x axis, creates plane in reference to y (face to back of face)
+                if(v1[1] + 1 <= self.size / 2):
+                    self.surfaces += ((self.vertices.index(v1), self.vertices.index(v2), self.vertices.index((v1[0], v1[1] + 1, v1[2])), self.vertices.index((v2[0], v2[1] + 1, v2[2]))), )
+        
+            if(v1[1] < v2[1] or v1[1] > v2[1]):     #edge along y axis, creates plane in reference to z (side by side planes)
+                if(v1[2] + 1 <= self.size / 2):
+                    self.surfaces += ((self.vertices.index(v1), self.vertices.index(v2), self.vertices.index((v1[0], v1[1], v1[2] + 1)), self.vertices.index((v2[0], v2[1], v2[2] + 1))), )
+
+            if(v1[2] < v2[2] or v1[2] > v2[2]):     #edge along z axis, creates plane in reference to x (top and bottom planes)
+                if(v1[0] + 1 <= self.size / 2):
+                    self.surfaces += ((self.vertices.index(v1), self.vertices.index(v2), self.vertices.index((v1[0] + 1, v1[1], v1[2])), self.vertices.index((v2[0] + 1, v2[1], v2[2]))), )
 
 
 # render base cube with solution path highlighted

@@ -46,7 +46,7 @@ def createLegalVertex(v, size):
 
 # to fill the surfaces, each connecting edge can be used as reference for 2 faces
 # this will loop through and look if each plane in the xyz planes are possible and adds them to surfaces
-# reminder matplotlib can probably do this   
+# reminder numpy can probably do this   
 
 def generateEdges(size, vertices):
     offset = size / 2.0
