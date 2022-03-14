@@ -6,12 +6,13 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 class Cube():
-    def __init__(self, size = 5):
+    def __init__(self, size = 5, offset = 0):
         self.size = size
         self.vertices = ()
         self.edges = ()
         self.sol_path = []
         self.surfaces = ()
+        self.offset = offset
     
     def __eq__(self, cube):
         print("might need this later")
@@ -26,11 +27,11 @@ class Cube():
         for x in range(0, self.size + 1):
             for y in range(0, self.size + 1):
                 for z in range(0, self.size + 1):
-                    self.vertices += ((x - self.size / 2, y - self.size / 2, z - self.size /2), )
+                    self.vertices += ((x - self.size / 2 + self.offset, y - self.size / 2, z - self.size /2), )
 
 
     def generateEdges(self):
-        self.edges = utils.generateEdges(self.size, self.vertices)
+        self.edges = utils.generateEdges(self.size, self.vertices, self.offset)
 
 
     def generatePath(self):

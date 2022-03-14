@@ -15,9 +15,9 @@ class CubePath():
         random.shuffle(temp)
         start_vertex = tuple(temp)
         cube1 = utils.createLegalVertex(start_vertex, size)
-        print(start_vertex)
+#         print(start_vertex)
 
-c = CubePath()
-c.generatePath(2)
+# c = CubePath()
+# c.generatePath(2)
 
-print(c.path)
+# print(c.path)

@@ -43,32 +43,38 @@ def down():
 def createLegalVertex(v, size):
     pass
 
-
+def offsetVerticies(xchange, verts):
+    temp = ()
+    for vert in verts:
+        x, y, z = vert[0], vert[1], vert[2]
+        temp += ((vert[0] + xchange), vert[1], vert[2])
+    return temp
+    
 # to fill the surfaces, each connecting edge can be used as reference for 2 faces
 # this will loop through and look if each plane in the xyz planes are possible and adds them to surfaces
 # reminder numpy can probably do this   
 
-def generateEdges(size, vertices):
-    offset = size / 2.0
+def generateEdges(size, vertices, offset):
+    offset2 = size / 2.0           # for center of cube
     edges = ()
     for vertex in vertices:
         x, y, z = vertex[0], vertex[1], vertex[2]
-        if x + 1 <= offset:        # vertex exist in positive x
+        if x + 1 <= offset + offset2:         # vertex exist in positive x
             edges += ((vertices.index(vertex), vertices.index((x + 1, y, z))), )
 
-        if x - 1 >= offset:               # vertex exist in negative x
+        if x - 1 >= offset + offset2:         # vertex exist in negative x
             edges += ((vertices.index(vertex), vertices.index((x - 1, y, z))), )
 
-        if y + 1 <= offset:         # vertex exist in positive y
+        if y + 1 <= offset2:         # vertex exist in positive y
             edges += ((vertices.index(vertex), vertices.index((x, y + 1, z))), )
 
-        if y - 1 >= offset:               # vertex exist in negative y
+        if y - 1 >= offset2:         # vertex exist in negative y
             edges += ((vertices.index(vertex), vertices.index((x, y - 1, z))), )
 
-        if z + 1 <= offset:        # vertex exist in positive y
+        if z + 1 <= offset2:         # vertex exist in positive y
             edges += ((vertices.index(vertex), vertices.index((x, y, z + 1))), )
 
-        if z - 1 >= offset:               # vertex exist in negative z
+        if z - 1 >= offset2:         # vertex exist in negative z
             edges += ((vertices.index(vertex), vertices.index((x, y, z - 1))), )
         
     return edges

@@ -6,6 +6,7 @@ import math
 import copy
 
 from cube import Cube
+import utils
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -36,24 +37,30 @@ edgesc = ((0,1), (0,2), (0, 4),
         (6,7), (6,2))
 
 
-def drawCube(rcube, pcube):
-    # draw the outline of the cube
-    # glBegin(GL_LINES)     # GL_lines for lines, GL_QUADS for surfaces
-    # for edge in rcube.edges:
-    #     for vertex in edge:
-    #         glColor3fv((0.1, 0.1, 0.2))
-    #         glVertex3fv(rcube.vertices[vertex])
-    # glEnd()
-    # glTranslatef(1, 0, 0)
+# def drawCube2(offset):
+#     # glTranslatef(offset[0], offset[1], offset[2])
+#     glBegin(GL_LINES)
+#     for edge in edgesc:
+#         for vertex in edge:
+#             glColor3fv((0.1, 0.1, 0.2))
+#             glVertex3fv(cubev[vertex])
+#     glEnd()
+#     # glTranslatef(offset[0], offset[1], offset[2])
 
-    glTranslatef(-.5, -.5, -.5)
-    glBegin(GL_LINES)
-    for edge in edgesc:
+
+def drawCube(rcube):
+    # draw the outline of the cube
+    # glTranslatef(-offset, 0, 0)
+    glBegin(GL_LINES)     # GL_lines for lines, GL_QUADS for surfaces
+    for edge in rcube.edges:
         for vertex in edge:
             glColor3fv((0.1, 0.1, 0.2))
-            glVertex3fv(cubev[vertex])
+            glVertex3fv(rcube.vertices[vertex])
     glEnd()
-    glTranslatef(0.5, 0.5, 0.5)
+    # glTranslatef(offset, 0, 0)
+
+    
+
     
 
     # draw the correct path
@@ -63,17 +70,6 @@ def drawCube(rcube, pcube):
     #     for vertex in surface:
     #         glVertex3fv(cube.vertices[vertex])
     # glEnd()
-
-
-
-# not the right way
-# def reset(edges):
-#     glBegin(GL_LINES)
-#     for edge in edges:
-#         for vertex in edge:
-#             glColor3fv((0.1, 0.1, 0.2))
-#             glVertex3fv(cube.vertices[vertex])
-#     glEnd()
 
 
 def mouseMovement(event):
@@ -113,23 +109,21 @@ def main():
     gluPerspective(90, (display[0]/display[1]), 0.1, 50.0)
     center = CUBE_SIZE / 2.0
 
-    # glLoadIdentity()
-    glTranslate(-8, 0, -10.0)
-
-    # glTranslatef((WIDTH - (WIDTH + CUBE_SIZE)) * 1.5, 0, -10.0) 
-    # glRotatef(10, 1, 1, 0)
-    
-    reference_cube = Cube(CUBE_SIZE)
+    reference_cube = Cube(CUBE_SIZE, 0)
     reference_cube.generatevertices()
     reference_cube.generateEdges()
     reference_cube.generateSurfaces()
-    player_cube = copy.deepcopy(reference_cube)
-    # original_edges = []
-    # for edge in reference_cube.edges:
-    #     for vertex in edge:
-    #         original_edges.append(glVertex3fv(reference_cube.vertices[vertex]))
-    # print(original_edges)
+    player_cube = Cube(CUBE_SIZE, 8)
+    player_cube.generatevertices()
+    player_cube.generateEdges()
+    player_cube.generateSurfaces()
+    offset = (CUBE_SIZE / 2)
+    # player_cube.vertices = utils.offsetVerticies(8, player_cube.vertices)
+    # player_cube = copy.deepcopy(reference_cube)
+    # print(len(player_cube.vertices))
+    # print(player_cube.edges)
 
+    glTranslate(-8, 0, -10.0)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -143,7 +137,8 @@ def main():
             mouseMovement(event)
         glClearColor(0.7, 0.7, 0.7, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        drawCube(reference_cube, player_cube)
+        drawCube(reference_cube)
+        drawCube(player_cube)
         pygame.display.flip()
         pygame.time.wait(10)
 
