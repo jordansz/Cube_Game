@@ -20,6 +20,7 @@ DIRECTIONS = {
 }
 
 def forward():
+    print("here")
     pass
 
 def backward():

@@ -10,13 +10,10 @@ import utils
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
-
+import numpy as np
 # colors and screen details
 WIDTH, HEIGHT = 1000, 600
-CUBE_SIZE = 1
-LINE_COLOR = ((0.1, 0.1, 0.1))  # play with colors later
-CUBE_COLOR = ((0.5, 0.5, 0.5))
-#BG_COLOR = 0.7, 0.7, 0.7, 0
+CUBE_SIZE = 5
 
 # for mouse movement
 lastPosX = 0
@@ -25,51 +22,32 @@ xRot = 0
 yRot = 0
 zRot = 0
 
-cubev = ((0,0,0), (1, 0, 0), (0, 0, 1), (1, 0, 1),
-        (0, 1, 0), (1, 1, 0), (0, 1, 1), (1, 1, 1) )
+GRID_SIZE = 10
+GRID_CENTER = GRID_SIZE / 2.0
+grid_vertices = ()
+grid_edges = ()
 
-edgesc = ((0,1), (0,2), (0, 4),
-        (1,3), (1,5),
-        (2,6), (2,3),
-        (3,7),
-        (4,5), (4,6),
-        (5, 7),
-        (6,7), (6,2))
+for x in np.arange(-GRID_CENTER, GRID_CENTER + 1, 1.0):
+    for z in np.arange(-GRID_CENTER, GRID_CENTER + 1, 1.0):
+        grid_vertices += ((x, 0.0, z), )
+# for x in range(0, GRID_SIZE + 1):
+#     for z in range(0, GRID_SIZE + 1):
+#         grid_vertices += ((x - GRID_CENTER, 0.0, z - GRID_CENTER + 1), )
 
+for vertex in grid_vertices:
+    x, z = vertex[0], vertex[2]
+    if x + 1 <= GRID_CENTER:
+        grid_edges += ((grid_vertices.index(vertex), grid_vertices.index((x + 1.0, 0.0, z))), )
 
-# def drawCube2(offset):
-#     # glTranslatef(offset[0], offset[1], offset[2])
-#     glBegin(GL_LINES)
-#     for edge in edgesc:
-#         for vertex in edge:
-#             glColor3fv((0.1, 0.1, 0.2))
-#             glVertex3fv(cubev[vertex])
-#     glEnd()
-#     # glTranslatef(offset[0], offset[1], offset[2])
+    if x - 1 >= -GRID_CENTER:
+        grid_edges += ((grid_vertices.index(vertex), grid_vertices.index((x - 1, 0.0, z))), )
 
+    if z + 1 <= GRID_CENTER:         # vertex exist in positive y
+        grid_edges += ((grid_vertices.index(vertex), grid_vertices.index((x, 0.0, z + 1))), )
 
-def drawCube(rcube):
-    # draw the outline of the cube
-    # glTranslatef(-offset, 0, 0)
-    glBegin(GL_LINES)     # GL_lines for lines, GL_QUADS for surfaces
-    for edge in rcube.edges:
-        for vertex in edge:
-            glColor3fv((0.1, 0.1, 0.2))
-            glVertex3fv(rcube.vertices[vertex])
-    glEnd()
-    # glTranslatef(offset, 0, 0)
+    if z - 1 >= -GRID_CENTER:         # vertex exist in negative z
+        grid_edges += ((grid_vertices.index(vertex), grid_vertices.index((x, 0.0, z - 1))), )
 
-    
-
-    
-
-    # draw the correct path
-    # glBegin(GL_QUADS)
-    # for surface in cube.surfaces:
-    #     glColor3fv((0, 1, 0))
-    #     for vertex in surface:
-    #         glVertex3fv(cube.vertices[vertex])
-    # glEnd()
 
 
 def mouseMovement(event):
@@ -95,52 +73,87 @@ def mouseMovement(event):
             temp[1] = modelView[4]*dy + modelView[5]*dx
             temp[2] = modelView[8]*dy + modelView[9]*dx
             norm_xy = math.sqrt(temp[0]*temp[0] + temp[1]*temp[1] + temp[2]*temp[2])
-            # glTranslate(8, 0, 10)
-            glRotatef(math.sqrt(dx*dx+dy*dy) / 2, temp[0]/norm_xy, temp[1]/norm_xy, temp[2]/norm_xy)
-            # glTranslate(-8, 0, -10)
-
+            # glRotatef(math.sqrt(dx*dx+dy*dy) / 2, temp[0]/norm_xy, temp[1]/norm_xy, temp[2]/norm_xy)
+            return [math.sqrt(dx*dx+dy*dy) / 2, temp[0]/norm_xy, temp[1]/norm_xy, temp[2]/norm_xy]
         lastPosX = x
         lastPosY = y
+    return [0, 0, 0, 0]
+        
+
+def draw(c1, c2):
+    glBegin(GL_LINES)
+    for edge in grid_edges:
+        for vertex in edge:
+            glColor3fv((0.0, 0.0, 0.0))
+            glVertex3fv(grid_vertices[vertex])
+    glEnd()
+
+
+    glPushMatrix()
+    glTranslatef(c1.center_pos[0], c1.center_pos[1], c1.center_pos[2])
+    glRotatef(c1.rotation[0], c1.rotation[1], c1.rotation[2], c1.rotation[3])
+    glTranslatef(-c1.center_pos[0], -c1.center_pos[1], -c1.center_pos[2])
+    glBegin(GL_LINES)
+    for edge in c1.edges:
+        for vertex in edge:
+            glColor3fv((0.5, 0.1, 0.2))
+            glVertex3fv(c1.vertices[vertex])
+    glEnd()
+    glPopMatrix()
+
+    glPushMatrix()
+    glTranslatef(c2.center_pos[0], c2.center_pos[1], c2.center_pos[2])
+    glRotatef(c2.rotation[0], c2.rotation[1], c2.rotation[2], c2.rotation[3])
+    glTranslatef(-c2.center_pos[0], -c2.center_pos[1], -c2.center_pos[2])
+    glBegin(GL_LINES)
+    for edge in c2.edges:
+        for vertex in edge:
+            glColor3fv((0.5, 0.1, 0.2))
+            glVertex3fv(c2.vertices[vertex])
+    glEnd()
+    glPopMatrix()
+
+
 
 def main():
     pygame.init()
     display = (WIDTH, HEIGHT)
     screen_surface = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    glMatrixMode(GL_MODELVIEW)                                              # ensure in modelview mode
     gluPerspective(90, (display[0]/display[1]), 0.1, 50.0)
-    center = CUBE_SIZE / 2.0
+    glTranslate(0, 0, -10.0)                                                # push world view back
 
-    reference_cube = Cube(CUBE_SIZE, 0)
-    reference_cube.generatevertices()
-    reference_cube.generateEdges()
-    reference_cube.generateSurfaces()
-    player_cube = Cube(CUBE_SIZE, 8)
-    player_cube.generatevertices()
-    player_cube.generateEdges()
-    player_cube.generateSurfaces()
-    offset = (CUBE_SIZE / 2)
-    # player_cube.vertices = utils.offsetVerticies(8, player_cube.vertices)
-    # player_cube = copy.deepcopy(reference_cube)
-    # print(len(player_cube.vertices))
-    # print(player_cube.edges)
+    c1 = Cube(CUBE_SIZE, [-5, 0, 0])
+    
 
-    glTranslate(-8, 0, -10.0)
+    c2 = Cube(CUBE_SIZE, [5, 0, 0])
+    c2.generatevertices()
+    c2.generateEdges()
+    # c2 = Cube(CUBE_SIZE,)
+    # print(c1.vertices)
+    # print(c1.edges)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    print("here")
-                    glTranslatef(1, 0, 0)
-            #         reset(original_edges)
-            mouseMovement(event)
+                if event.key == pygame.K_r:             # reset world view to original position
+                    glMatrixMode(GL_MODELVIEW)
+                    glLoadIdentity()
+                    gluPerspective(90, (display[0]/display[1]), 0.1, 50.0)
+                    glTranslatef(0, 0, -10)
+                    c1.rotation = [0, 0, 0, 0]
+                    c2.rotation = [0, 0, 0, 0]
+
+            rotation = mouseMovement(event) 
+            if rotation[1] != 0 or rotation[2] != 0:
+                c1.rotation = rotation
+                c2.rotation = rotation
+        
         glClearColor(0.7, 0.7, 0.7, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        drawCube(reference_cube)
-        drawCube(player_cube)
+        draw(c1, c2)
         pygame.display.flip()
         pygame.time.wait(10)
-
-
 main()

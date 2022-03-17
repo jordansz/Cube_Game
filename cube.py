@@ -6,13 +6,17 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 class Cube():
-    def __init__(self, size = 5, offset = 0):
+    def __init__(self, size, center_pos):
+        self.center_pos = center_pos
         self.size = size
         self.vertices = ()
         self.edges = ()
-        self.sol_path = []
         self.surfaces = ()
-        self.offset = offset
+        self.sol_path = []
+        self.rotation = [0, 0, 0, 0]
+        self.generatevertices()
+        self.generateEdges()
+
     
     def __eq__(self, cube):
         print("might need this later")
@@ -24,14 +28,35 @@ class Cube():
 # or try making every cube a seperate item
 
     def generatevertices(self):
+        offset = self.size / 2.0
         for x in range(0, self.size + 1):
             for y in range(0, self.size + 1):
                 for z in range(0, self.size + 1):
-                    self.vertices += ((x - self.size / 2 + self.offset, y - self.size / 2, z - self.size /2), )
+                    self.vertices += ((x - offset + self.center_pos[0], y - offset + self.center_pos[1], z - offset + self.center_pos[2]), )
 
 
     def generateEdges(self):
-        self.edges = utils.generateEdges(self.size, self.vertices, self.offset)
+        # self.edges = utils.generateEdges(self.size, self.vertices, self.offset)
+        offset = self.size - (self.size / 2.0)           # for range of cube
+        for vertex in self.vertices:
+            x,y, z = vertex[0], vertex[1], vertex[2]
+            if x + 1 <= offset + self.center_pos[0]:         # vertex exist in positive x
+                self.edges += ((self.vertices.index(vertex), self.vertices.index((x + 1, y, z))), )
+
+            # if x - 1 > -offset:         # vertex exist in negative x
+            #     self.edges += ((self.vertices.index(vertex), self.vertices.index((x - 1, y, z))), )
+
+            if y + 1 <= offset + self.center_pos[1]:         # vertex exist in positive y
+                self.edges += ((self.vertices.index(vertex), self.vertices.index((x, y + 1, z))), )
+
+            # if y - 1 > -offset:         # vertex exist in negative y
+            #     self.edges += ((self.vertices.index(vertex), self.vertices.index((x, y - 1, z))), )
+
+            if z + 1 <= offset + self.center_pos[2]:         # vertex exist in positive y
+                self.edges += ((self.vertices.index(vertex), self.vertices.index((x, y, z + 1))), )
+
+            # if z - 1 > -offset:         # vertex exist in negative z
+            #     self.edges += ((self.vertices.index(vertex), self.vertices.index((x, y, z - 1))), )
 
 
     def generatePath(self):
