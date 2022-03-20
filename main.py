@@ -13,6 +13,7 @@ from OpenGL.GLU import *
 import numpy as np
 # colors and screen details
 WIDTH, HEIGHT = 1000, 600
+display = (WIDTH, HEIGHT)
 CUBE_SIZE = 5
 
 # for mouse movement
@@ -81,12 +82,22 @@ def mouseMovement(event):
         
 
 def draw(c1, c2):
-    glBegin(GL_LINES)
-    for edge in grid_edges:
-        for vertex in edge:
-            glColor3fv((0.0, 0.0, 0.0))
-            glVertex3fv(grid_vertices[vertex])
-    glEnd()
+    glClearColor(0.7, 0.7, 0.7, 0)
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+
+    # glViewport(0, 0, WIDTH, HEIGHT)
+    # glLoadIdentity()
+    # glBegin(GL_LINES)
+    # for edge in grid_edges:
+    #     for vertex in edge:
+    #         glColor3fv((0.0, 0.0, 0.0))
+    #         glVertex3fv(grid_vertices[vertex])
+    # glEnd()
+
+    glViewport(0, 0, WIDTH // 2, HEIGHT)
+    glLoadIdentity()
+    gluPerspective(90, (display[0] / display[1]) / 2, 0.1, 50.0) 
+    gluLookAt(c1.center_pos[0], c1.center_pos[1], c1.center_pos[2] + 8, c1.center_pos[0], c1.center_pos[1], c1.center_pos[2], 0, 1, 0)
 
 
     glPushMatrix()
@@ -96,11 +107,15 @@ def draw(c1, c2):
     glBegin(GL_LINES)
     for edge in c1.edges:
         for vertex in edge:
-            glColor3fv((0.5, 0.1, 0.2))
+            glColor3fv((0, 0, 0))
             glVertex3fv(c1.vertices[vertex])
     glEnd()
     glPopMatrix()
 
+    glViewport(WIDTH // 2, 0, WIDTH // 2, HEIGHT)
+    glLoadIdentity()
+    gluPerspective(90, (display[0] / display[1]) / 2, 0.1, 50.0) 
+    gluLookAt(c2.center_pos[0], c2.center_pos[1], c2.center_pos[2] + 8, c2.center_pos[0], c2.center_pos[1], c2.center_pos[2], 0, 1, 0)
     glPushMatrix()
     glTranslatef(c2.center_pos[0], c2.center_pos[1], c2.center_pos[2])
     glRotatef(c2.rotation[0], c2.rotation[1], c2.rotation[2], c2.rotation[3])
@@ -108,7 +123,7 @@ def draw(c1, c2):
     glBegin(GL_LINES)
     for edge in c2.edges:
         for vertex in edge:
-            glColor3fv((0.5, 0.1, 0.2))
+            glColor3fv((0, 0, 0))
             glVertex3fv(c2.vertices[vertex])
     glEnd()
     glPopMatrix()
@@ -117,21 +132,14 @@ def draw(c1, c2):
 
 def main():
     pygame.init()
-    display = (WIDTH, HEIGHT)
     screen_surface = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
     glMatrixMode(GL_MODELVIEW)                                              # ensure in modelview mode
     gluPerspective(90, (display[0]/display[1]), 0.1, 50.0)
     glTranslate(0, 0, -10.0)                                                # push world view back
 
-    c1 = Cube(CUBE_SIZE, [-5, 0, 0])
-    
+    c1 = Cube(CUBE_SIZE, [-6, 0, 0])
+    c2 = Cube(CUBE_SIZE, [6, 0, 0])
 
-    c2 = Cube(CUBE_SIZE, [5, 0, 0])
-    c2.generatevertices()
-    c2.generateEdges()
-    # c2 = Cube(CUBE_SIZE,)
-    # print(c1.vertices)
-    # print(c1.edges)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -151,8 +159,7 @@ def main():
                 c1.rotation = rotation
                 c2.rotation = rotation
         
-        glClearColor(0.7, 0.7, 0.7, 0)
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+
         draw(c1, c2)
         pygame.display.flip()
         pygame.time.wait(10)
